@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Noto Serif JP", "Playfair Display", serif;
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-art-bg: #fcfaf2;
+  --color-art-text: #1a1a1a;
+  --color-art-red: #e63946;
+  --color-art-beige: #f2ede4;
+  --color-art-charcoal: #1a1a1a;
+}
+
+body {
+  background-color: #fcfaf2;
+  color: #1a1a1a;
+  font-family: var(--font-serif);
+}
+
+/* Scrollbar styling matching the artisan design */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f2ede4;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e63946;
+}

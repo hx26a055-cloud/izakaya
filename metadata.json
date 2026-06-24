@@ -1,0 +1,6 @@
+{
+  "name": "居酒屋暗算マスター",
+  "description": "居酒屋の注文を素早く暗算して会計する脳トレ暗算ゲーム。お通し代や消費税、割引を正確に計算してお店を繁盛させよう！",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
