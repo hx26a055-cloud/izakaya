@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Difficulty, CustomerTable, GameStats, HistoryRecord } from '../types';
 import { generateRandomTable, calculateBill } from '../utils/gameData';
 import ReceiptSlip from './ReceiptSlip';
-import { playSuccessSound, playFailureSound, playClickSound, playWoodBlockSound } from '../utils/audio';
-import { Heart, Trophy, DollarSign, Zap, CheckCircle, AlertTriangle, Clock, Keyboard, ArrowLeft } from 'lucide-react';
+import { playSuccessSound, playFailureSound, playClickSound, playWoodBlockSound, playNewTableSound, startBgm, stopBgm, toggleBgm, isBgmActive } from '../utils/audio';
+import { Heart, Trophy, DollarSign, Zap, CheckCircle, AlertTriangle, Clock, Keyboard, ArrowLeft, Music } from 'lucide-react';
 
 interface PlayScreenProps {
   difficulty: Difficulty;
@@ -41,6 +41,20 @@ export default function PlayScreen({ difficulty, playerName, onGameOver, onExit 
   // Sound play guard
   const isCorrectingRef = useRef<boolean>(false);
 
+  // BGM states
+  const [isBgmOn, setIsBgmOn] = useState<boolean>(false);
+
+  // Start BGM on mount, stop on unmount
+  useEffect(() => {
+    // Start BGM
+    startBgm();
+    setIsBgmOn(isBgmActive());
+
+    return () => {
+      stopBgm();
+    };
+  }, []);
+
   // Initialize first table
   useEffect(() => {
     const initialTables = [
@@ -53,6 +67,17 @@ export default function PlayScreen({ difficulty, playerName, onGameOver, onExit 
     // Play start chime
     playWoodBlockSound();
   }, [difficulty]);
+
+  // Play sound when a new table/slip is added
+  const prevTablesLengthRef = useRef<number>(0);
+  useEffect(() => {
+    if (tables.length > prevTablesLengthRef.current) {
+      if (prevTablesLengthRef.current > 0) {
+        playNewTableSound();
+      }
+    }
+    prevTablesLengthRef.current = tables.length;
+  }, [tables.length]);
 
   // Close mobile input modal when switching active tables
   useEffect(() => {
@@ -148,6 +173,7 @@ export default function PlayScreen({ difficulty, playerName, onGameOver, onExit 
 
   // Handle game over trigger
   const triggerGameOver = () => {
+    stopBgm();
     const finalStats: GameStats = {
       score,
       totalEarned,
@@ -298,6 +324,23 @@ export default function PlayScreen({ difficulty, playerName, onGameOver, onExit 
             title="メニューに戻る"
           >
             <ArrowLeft className="w-4 h-4 text-[#e63946]" />
+          </button>
+
+          <button
+            id="btn-bgm"
+            onClick={() => {
+              playClickSound();
+              const bgmActive = toggleBgm();
+              setIsBgmOn(bgmActive);
+            }}
+            className={`p-2.5 border-2 border-[#1a1a1a] shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(26,26,26,1)] cursor-pointer transition-all flex items-center justify-center ${
+              isBgmOn 
+                ? 'bg-[#fdf0d5] hover:bg-[#fbdcb0] text-[#1a1a1a]' 
+                : 'bg-white hover:bg-[#f2ede4] text-stone-400'
+            }`}
+            title="BGM 再生/一時停止"
+          >
+            <Music className={`w-4 h-4 ${isBgmOn ? 'text-[#e63946] animate-pulse' : 'text-stone-400'}`} />
           </button>
           
           <div>
